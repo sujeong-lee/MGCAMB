@@ -15,7 +15,7 @@ from distutils.core import Command
 file_dir = os.path.abspath(os.path.dirname(__file__))
 os.chdir(file_dir)
 
-sys.path.insert(0, os.path.join(file_dir, 'camb'))
+sys.path.insert(0, os.path.join(file_dir, 'mgcamb'))
 _compile: Any = __import__('_compilers')
 
 if _compile.is_windows:
@@ -30,7 +30,7 @@ def get_long_description():
 
 
 def find_version():
-    version_file = open(os.path.join(file_dir, 'camb', '__init__.py')).read()
+    version_file = open(os.path.join(file_dir, 'mgcamb', '__init__.py')).read()
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
     if version_match:
         version = version_match.group(1)
@@ -106,7 +106,7 @@ def clean_dir(path, rmdir=False):
 def make_library(cluster=False):
     os.chdir(os.path.join(file_dir, 'fortran'))
     pycamb_path = '..'
-    lib_file = os.path.join(pycamb_path, 'camb', DLLNAME)
+    lib_file = os.path.join(pycamb_path, 'mgcamb', DLLNAME)
     if _compile.is_windows or not _compile.check_ifort():
         ok, gfortran_version = _compile.check_gfortran(msg=not _compile.is_windows)
         if ok and '8.2.0' in gfortran_version:
@@ -193,14 +193,14 @@ def make_library(cluster=False):
     else:
         get_forutils()
         print("Compiling source...")
-        subprocess.call("make python PYCAMB_OUTPUT_DIR=%s/camb/ CLUSTER_SAFE=%d" %
+        subprocess.call("make python PYCAMB_OUTPUT_DIR=%s/mgcamb/ CLUSTER_SAFE=%d" %
                         (pycamb_path, int(cluster)), shell=True)
         subprocess.call("chmod 755 %s" % lib_file, shell=True)
 
-    if not os.path.isfile(os.path.join(pycamb_path, 'camb', DLLNAME)):
+    if not os.path.isfile(os.path.join(pycamb_path, 'mgcamb', DLLNAME)):
         sys.exit('Compilation failed')
     tem_file = 'HighLExtrapTemplate_lenspotentialCls.dat'
-    tem = os.path.join(pycamb_path, 'camb', tem_file)
+    tem = os.path.join(pycamb_path, 'mgcamb', tem_file)
     if not os.path.exists(tem) or os.path.getmtime(tem) < os.path.getmtime(tem_file):
         shutil.copy(tem_file, tem)
 
@@ -265,7 +265,8 @@ class CleanLibrary(clean):
 
 
 if __name__ == "__main__":
-    setup(name=os.getenv('CAMB_PACKAGE_NAME', 'camb'),
+
+    setup(name=os.getenv('CAMB_PACKAGE_NAME', 'mgcamb'),
           version=find_version(),
           description='Code for Anisotropies in the Microwave Background',
           long_description=get_long_description(),
@@ -282,15 +283,15 @@ if __name__ == "__main__":
           cmdclass={'build_py': SharedLibrary, 'build_cluster': SharedLibraryCluster,
                     'make': MakeLibrary, 'make_cluster': MakeLibraryCluster, 'clean': CleanLibrary,
                     'develop': DevelopLibrary, 'develop_cluster': DevelopLibraryCluster},
-          packages=['camb', 'camb.tests'],
+          packages=['mgcamb', 'mgcamb.tests'],
           platforms="any",
-          package_data={'camb': [DLLNAME, 'HighLExtrapTemplate_lenspotentialCls.dat',
+          package_data={'mgcamb': [DLLNAME, 'HighLExtrapTemplate_lenspotentialCls.dat',
                                  'PArthENoPE_880.2_marcucci.dat', 'PArthENoPE_880.2_standard.dat',
                                  'PRIMAT_Yp_DH_Error.dat', 'PRIMAT_Yp_DH_ErrorMC_2021.dat']},
-          test_suite='camb.tests',
+          test_suite='mgcamb.tests',
           entry_points={
               'console_scripts': [
-                  'camb=camb._command_line:run_command_line',
+                  'mgcamb=mgcamb._command_line:run_command_line',
               ]},
           classifiers=[
               'Development Status :: 5 - Production/Stable',
