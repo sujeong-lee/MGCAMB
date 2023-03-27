@@ -1,3 +1,16 @@
+Note for DES 
+==============
+This is a fork of MGCAMB v4 slightly modified to be python-installable. 
+
+To build only, `python setup.py build` \
+To build and install, `python setup.py install`, \
+which will install `mgcamb` python package in your favorite location. 
+
+To use the package in python, do `import mgcamb`. \
+Jupyter notebook for example is in [example.ipynb](https://).\
+Cosmosis interface can be found in `cosmosis-standard-library/boltzmann/mgcamb_v4/mgcamb_interface.py` in `extension` branch.
+
+
 MGCAMB v4.0
 ===========
 ## Modified Growth with CAMB
